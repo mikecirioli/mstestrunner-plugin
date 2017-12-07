@@ -44,6 +44,7 @@ public class MsTestBuilder extends Builder {
     private final String resultFile;
     private final String cmdLineArgs;
     private final boolean continueOnFail;
+    private final boolean failIfNoTests;
 
     /**
      * When this builder is created in the project configuration step,
@@ -52,16 +53,18 @@ public class MsTestBuilder extends Builder {
      * @param msTestName The MSTest logical name
      * @param testFiles The path of the test files
      * @param cmdLineArgs Whitespace separated list of command line arguments
+     * @param failIfNoTests
      */
     @DataBoundConstructor
     @SuppressWarnings("unused")
-    public MsTestBuilder(String msTestName, String testFiles, String categories, String resultFile, String cmdLineArgs, boolean continueOnFail) {
+    public MsTestBuilder(String msTestName, String testFiles, String categories, String resultFile, String cmdLineArgs, boolean continueOnFail, boolean failIfNoTests) {
         this.msTestName = msTestName;
         this.testFiles = testFiles;
         this.categories = categories;
         this.resultFile = resultFile;
         this.cmdLineArgs = cmdLineArgs;
         this.continueOnFail = continueOnFail;
+        this.failIfNoTests = failIfNoTests;
     }
 
     @SuppressWarnings("unused")
@@ -92,6 +95,11 @@ public class MsTestBuilder extends Builder {
     @SuppressWarnings("unused")
     public boolean getcontinueOnFail() {
         return continueOnFail;
+    }
+
+    @SuppressWarnings("unused")
+    public boolean getFailIfNoTests() {
+        return failIfNoTests;
     }
 
     public MsTestInstallation getMsTest() {
@@ -232,8 +240,14 @@ public class MsTestBuilder extends Builder {
         }
         // nothing of include rule has match files in workspace folder
         if (testContainers.isEmpty()) {
-        	listener.fatalError("No test files was found");
-        	return false;
+            if (failIfNoTests) {
+                listener.fatalError("No test files was found");
+                return false;
+            }
+            else {
+                listener.getLogger().println("No test files was found, but the configuration says we should continue with the build anyway.");
+                return true;
+            }
         }
 
         for (String testContainer : testContainers) {
