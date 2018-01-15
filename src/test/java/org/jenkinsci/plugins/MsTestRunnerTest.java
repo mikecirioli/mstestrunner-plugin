@@ -32,7 +32,7 @@ public class MsTestRunnerTest {
     public void runTestsBasic() throws URISyntaxException, IOException, InterruptedException, ExecutionException {
         // Configure mocked MsTest tool that will not fail
         mockMSTestInstallation(false);
-        FreeStyleProject p = createFreeStyleProjectWithMsTest("", "", false);
+        FreeStyleProject p = createFreeStyleProjectWithMsTest("", "", false, true);
         FreeStyleBuild build = p.scheduleBuild2(0).get();
         
         assertLogContains(SUCCESS_MESSAGE, build);
@@ -43,7 +43,7 @@ public class MsTestRunnerTest {
     public void runTestsFail() throws InterruptedException, ExecutionException, URISyntaxException, IOException {
         // Configure mocked MsTest tool that will fail
         mockMSTestInstallation(true);
-        FreeStyleProject p = createFreeStyleProjectWithMsTest("", "", false);
+        FreeStyleProject p = createFreeStyleProjectWithMsTest("", "", false, true);
         FreeStyleBuild build = p.scheduleBuild2(0).get();
         
         assertLogContains(FAILURE_MESSAGE, build);
@@ -54,7 +54,7 @@ public class MsTestRunnerTest {
     public void ignoreFailingTests() throws InterruptedException, ExecutionException, URISyntaxException, IOException {
         // Configure mocked MsTest tool that will fail
         mockMSTestInstallation(true);
-        FreeStyleProject p = createFreeStyleProjectWithMsTest("", "", true);
+        FreeStyleProject p = createFreeStyleProjectWithMsTest("", "", true, true);
         FreeStyleBuild build = p.scheduleBuild2(0).get();
         
         assertLogContains(FAILURE_MESSAGE, build);
@@ -66,7 +66,7 @@ public class MsTestRunnerTest {
         String category = "somecategory";
         // Configure mocked MsTest tool that will not fail
         mockMSTestInstallation(false);
-        FreeStyleProject p = createFreeStyleProjectWithMsTest(category, "", true);
+        FreeStyleProject p = createFreeStyleProjectWithMsTest(category, "", true, true);
         FreeStyleBuild build = p.scheduleBuild2(0).get();
         
         assertLogContains(SUCCESS_MESSAGE, build);
@@ -79,7 +79,7 @@ public class MsTestRunnerTest {
         String cmdArg = "/testsettings:Local.Testsettings";
         // Configure mocked MsTest tool that will not fail
         mockMSTestInstallation(false);
-        FreeStyleProject p = createFreeStyleProjectWithMsTest("", cmdArg, true);
+        FreeStyleProject p = createFreeStyleProjectWithMsTest("", cmdArg, true, true);
         FreeStyleBuild build = p.scheduleBuild2(0).get();
         
         assertLogContains(SUCCESS_MESSAGE, build);
@@ -112,14 +112,15 @@ public class MsTestRunnerTest {
      * @param categories the test categories to run
      * @param cmdLineArgs the cmd line arguments to use when running MsTest
      * @param ignoreFailingTests whether to ignore failing tests or not
+     * @param failIfNoTests whether to fail the build if no test files are found
      * @return the FreeStyleProject
      * @throws URISyntaxException
      * @throws IOException
      */
-    private FreeStyleProject createFreeStyleProjectWithMsTest(String categories, String cmdLineArgs, boolean ignoreFailingTests) throws URISyntaxException, IOException {
+    private FreeStyleProject createFreeStyleProjectWithMsTest(String categories, String cmdLineArgs, boolean ignoreFailingTests, boolean failIfNoTests) throws URISyntaxException, IOException {
         String msTestFiles = getClass().getResource("mstest/testfile").toURI().getPath();
         FreeStyleProject p = r.jenkins.createProject(FreeStyleProject.class, "MSTestProject");
-        p.getBuildersList().add(new MsTestBuilder(MS_TEST_INSTALLATION, msTestFiles, categories, "resultFile", cmdLineArgs, ignoreFailingTests));
+        p.getBuildersList().add(new MsTestBuilder(MS_TEST_INSTALLATION, msTestFiles, categories, "resultFile", cmdLineArgs, ignoreFailingTests, failIfNoTests));
         return p;
     }
     
