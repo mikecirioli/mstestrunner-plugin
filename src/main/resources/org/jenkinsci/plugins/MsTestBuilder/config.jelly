@@ -15,7 +15,7 @@
         <f:expandableTextbox name="MsTestBuilder.testFiles" value="${instance.testFiles}"/>
     </f:entry>
     <f:entry title="${%Fail if no tests}" field="failIfNoTests">
-      <f:checkbox checked="true" />
+      <f:checkbox checked="${instance.failIfNoTests}" />
     </f:entry>
     <f:entry title="Test Categories" field="categories">
         <f:textbox name="MsTestBuilder.categories" value="${instance.categories}" />
