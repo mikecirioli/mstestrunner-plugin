@@ -1,5 +1,6 @@
 package org.jenkinsci.plugins;
 
+import hudson.Functions;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.concurrent.ExecutionException;
@@ -98,8 +99,10 @@ public class MsTestRunnerTest {
         // Get appropriate installation file depending on parameter
         String home = failingInstallation ? getClass().getResource("mstest/tool/mstest-fail").toURI().getPath()
                                           : getClass().getResource("mstest/tool/mstest").toURI().getPath();
-        // Execution permissions for the tool
-        GNUCLibrary.LIBC.chmod(home, 0755);
+        if (!Functions.isWindows()) {
+            // Execution permissions for the tool
+            GNUCLibrary.LIBC.chmod(home, 0755);
+        }
         // Configure installation
         MsTestInstallation msTestInstallation = new MsTestInstallation(MS_TEST_INSTALLATION, home, null, false);
         r.jenkins.getDescriptorByType(MsTestInstallation.DescriptorImpl.class).setInstallations(msTestInstallation);
