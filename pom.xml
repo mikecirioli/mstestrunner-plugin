@@ -4,7 +4,8 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>2.7</version>
+        <version>4.29</version>
+        <relativePath/>
     </parent>
 
     <artifactId>mstestrunner</artifactId>
@@ -23,7 +24,8 @@
     </developers>
 
     <properties>
-      <jenkins.version>1.609.1</jenkins.version>
+        <jenkins.version>2.204.6</jenkins.version>
+        <java.level>8</java.level>
     </properties>
 
     <scm>
@@ -33,10 +35,9 @@
 
         <url>https://github.com/jenkinsci/mstestrunner-plugin</url>
       <tag>HEAD</tag>
-  </scm>
+    </scm>
 
 
-  <!-- get every artifact through maven.glassfish.org, which proxies all the artifacts that we need -->
     <repositories>
         <repository>
             <id>repo.jenkins-ci.org</id>

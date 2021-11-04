@@ -133,6 +133,10 @@ public class MsTestBuilder extends Builder {
             installation = installation.forNode(node, listener);
             installation = installation.forEnvironment(env);
             String pathToMsTest = installation.getHome();
+            if (pathToMsTest == null) {
+                listener.fatalError("MSTest installation HOME is null. It needs to be configured.");
+                return false;
+            }
             FilePath exec = new FilePath(launcher.getChannel(), pathToMsTest);
             try {
                 if (!exec.exists()) {
