@@ -97,8 +97,8 @@ public class MsTestRunnerTest {
      */
     private MsTestInstallation mockMSTestInstallation(boolean failingInstallation) throws URISyntaxException {
         // Get appropriate installation file depending on parameter
-        String home = failingInstallation ? getClass().getResource("mstest/tool/mstest-fail").toURI().getPath()
-                                          : getClass().getResource("mstest/tool/mstest").toURI().getPath();
+        String home = failingInstallation ? getClass().getResource("mstest/tool/mstest-fail.cmd").toURI().getPath()
+                                          : getClass().getResource("mstest/tool/mstest.cmd").toURI().getPath();
         if (!Functions.isWindows()) {
             // Execution permissions for the tool
             GNUCLibrary.LIBC.chmod(home, 0755);
